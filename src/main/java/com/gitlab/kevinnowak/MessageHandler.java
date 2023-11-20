@@ -2,9 +2,17 @@ package com.gitlab.kevinnowak;
 
 class MessageHandler {
     static final String BANNER = generateBanner();
-    static final String LEAGUE_PROMPT = generateLeaguePrompt();
+    static final String USER_INPUT_PROMPT = generateUserInputPrompt();
+    static final String INVALID_INPUT_MESSAGE = generateInvalidInputMessage();
 
-    private static String generateLeaguePrompt() {
+    private static String generateInvalidInputMessage() {
+        return """
+               
+               Your input "%d" is invalid! Please try again.
+               """;
+    }
+
+    private static String generateUserInputPrompt() {
         return """
                 1) %s
                 2) %s

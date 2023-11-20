@@ -1,11 +1,10 @@
 package com.gitlab.kevinnowak;
 
-import java.net.MalformedURLException;
-
 class Termibol {
     private final UserInputHandler userInputHandler;
     private League selectedLeague;
     private final DataHandler dataHandler;
+    private int userInput;
 
     public Termibol() {
         this.userInputHandler = new UserInputHandler();
@@ -13,21 +12,42 @@ class Termibol {
         this.dataHandler = new DataHandler();
     }
 
-    void start() {
-        printBannerAndPrompt();
-        readUserInputAndSetSelectedLeague();
+    int start() {
+        printBanner();
+
+        do {
+            try {
+                readUserInput();
+            } catch (NoLeagueException e) {
+                System.err.println(e.getMessage());
+            }
+        } while (this.selectedLeague == League.NONE);
+
         // make API call and receive data
         dataHandler.callApiForStandings(selectedLeague);
         // pass data to message handler and receive formatted string
         // print standings
+
+        return 1;
     }
 
-    private void readUserInputAndSetSelectedLeague() {
-        int userInput = userInputHandler.readInt();
-        selectedLeague = determineSelectedLeagueFromInt(userInput);
+    void readUserInput() throws NoLeagueException {
+        printUserInputPrompt();
+        this.userInput = readUserInputAndSetSelectedLeague();
+
+        if (this.selectedLeague == League.NONE) {
+            throw new NoLeagueException(String.format(MessageHandler.INVALID_INPUT_MESSAGE, this.userInput));
+        }
     }
 
-    private League determineSelectedLeagueFromInt(int userInput) {
+    int readUserInputAndSetSelectedLeague() {
+        this.userInput = userInputHandler.readInt();
+        this.selectedLeague = determineSelectedLeagueFromInt(this.userInput);
+
+        return this.userInput;
+    }
+
+    League determineSelectedLeagueFromInt(int userInput) {
         return switch (userInput) {
             case 1 -> League.PREMIER_LEAGUE;
             case 2 -> League.BUNDESLIGA;
@@ -37,8 +57,15 @@ class Termibol {
         };
     }
 
-    private void printBannerAndPrompt() {
+    private void printBanner() {
         System.out.println(MessageHandler.BANNER);
-        System.out.print(MessageHandler.LEAGUE_PROMPT);
+    }
+
+    private void printUserInputPrompt() {
+        System.out.print(MessageHandler.USER_INPUT_PROMPT);
+    }
+
+    League getSelectedLeague() {
+        return selectedLeague;
     }
 }
