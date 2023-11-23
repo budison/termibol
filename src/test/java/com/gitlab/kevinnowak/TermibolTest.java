@@ -6,12 +6,13 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.stream.Stream;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 class TermibolTest {
 
@@ -100,4 +101,28 @@ class TermibolTest {
             System.setIn(originalIn);
         }
     }
+
+    @Test
+    void shouldPrintSomethingToOutputStreamWhenRunningMain() {
+        // Given
+        InputStream originalIn = System.in;
+        ByteArrayInputStream testIn = new ByteArrayInputStream("1".getBytes());
+        System.setIn(testIn);
+
+        PrintStream originalOut = System.out;
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(bos));
+
+        try {
+            // When
+            Main.main(null);
+
+            // Then
+            assertTrue(bos.size() > 0);
+        } finally {
+            System.setIn(originalIn);
+            System.setOut(originalOut);
+        }
+    }
+
 }

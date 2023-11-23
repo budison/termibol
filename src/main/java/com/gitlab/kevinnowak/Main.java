@@ -5,4 +5,6 @@ class Main {
         Termibol termibol = new Termibol();
         termibol.start();
     }
+
+    private Main() {}
 }
