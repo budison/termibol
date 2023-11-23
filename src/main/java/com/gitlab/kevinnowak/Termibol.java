@@ -6,7 +6,7 @@ class Termibol {
     private final DataHandler dataHandler;
     private int userInput;
 
-    public Termibol() {
+    Termibol() {
         this.userInputHandler = new UserInputHandler();
         this.selectedLeague = League.NONE;
         this.dataHandler = new DataHandler();

@@ -26,7 +26,7 @@ class DataHandler {
     }
 
 
-    public void callApiForStandings(League selectedLeague) {
+    void callApiForStandings(League selectedLeague) {
 
     }
 }

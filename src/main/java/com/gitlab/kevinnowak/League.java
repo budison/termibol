@@ -1,6 +1,6 @@
 package com.gitlab.kevinnowak;
 
-public enum League {
+enum League {
     NONE("None"),
     PREMIER_LEAGUE("Premier League"),
     BUNDESLIGA("Bundesliga"),
