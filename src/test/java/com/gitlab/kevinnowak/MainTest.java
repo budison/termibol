@@ -27,7 +27,7 @@ class MainTest {
             Main.main(null);
 
             // Then
-            assertTrue(bos.size() < 0);
+            assertTrue(bos.size() > 0);
         } finally {
             System.setIn(originalIn);
             System.setOut(originalOut);
