@@ -7,9 +7,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
-import java.io.PrintStream;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -61,7 +59,7 @@ class TermibolTest {
 
     @ParameterizedTest
     @MethodSource("userInputAndCorrespondingLeagueProvider")
-    void shouldReadUserInputAndSetSelectedLeagueCorrectly(String simulatedUserInput, League expectedLeague) {
+    void shouldReadUserInputAndSetSelectedLeagueCorrectly(String simulatedUserInput, League expectedLeague) throws NoNumberInputException {
         // Given
         InputStream originalIn = System.in;
         ByteArrayInputStream testIn = new ByteArrayInputStream(simulatedUserInput.getBytes());
@@ -93,7 +91,28 @@ class TermibolTest {
 
         try {
             // When
-            Exception exception = assertThrows(NoLeagueException.class, termibol::readUserInput);
+            Exception exception = assertThrows(NoLeagueException.class, termibol::getUserInputViaPrompt);
+            // Then
+            assertEquals(League.NONE, termibol.getSelectedLeague());
+            assertEquals(expectedMessage, exception.getMessage());
+        } finally {
+            System.setIn(originalIn);
+        }
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"f", "Q", ".", "<", "+", " "})
+    void shouldThrowNoNumberInputExceptionWhenUserInputIsNotANumber(String simulatedUserInput) {
+        // Given
+        InputStream originalIn = System.in;
+        ByteArrayInputStream testIn = new ByteArrayInputStream(simulatedUserInput.getBytes());
+        System.setIn(testIn);
+        Termibol termibol = new Termibol();
+        String expectedMessage = String.format(MessageHandler.NOT_A_NUMBER_MESSAGE, simulatedUserInput);
+
+        try {
+            // When
+            Exception exception = assertThrows(NoNumberInputException.class, termibol::getUserInputViaPrompt);
             // Then
             assertEquals(League.NONE, termibol.getSelectedLeague());
             assertEquals(expectedMessage, exception.getMessage());

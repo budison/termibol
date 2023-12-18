@@ -9,7 +9,7 @@ class UserInputHandler {
         this.scanner = new Scanner(System.in);
     }
 
-    int readInt() {
-        return scanner.nextInt();
+    String read() {
+        return scanner.next();
     }
 }

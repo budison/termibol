@@ -1,5 +1,7 @@
 package com.gitlab.kevinnowak;
 
+import java.util.NoSuchElementException;
+
 class Termibol {
     private final UserInputHandler userInputHandler;
     private League selectedLeague;
@@ -17,21 +19,23 @@ class Termibol {
 
         do {
             try {
-                readUserInput();
-            } catch (NoLeagueException e) {
+                getUserInputViaPrompt();
+            } catch (NoLeagueException | NoNumberInputException e) {
                 System.err.println(e.getMessage());
             }
         } while (this.selectedLeague == League.NONE);
 
-        // make API call and receive data
-        dataHandler.callApiForStandings(selectedLeague);
-        // pass data to message handler and receive formatted string
-        // print standings
+        dataHandler.callApiForStanding(selectedLeague);
+
+//        Standing standing = callApiForStandings()
+//        messageHandler.printTable(table)
+
+
 
         return 1;
     }
 
-    void readUserInput() throws NoLeagueException {
+    void getUserInputViaPrompt() throws NoLeagueException, NoNumberInputException {
         printUserInputPrompt();
         this.userInput = readUserInputAndSetSelectedLeague();
 
@@ -40,8 +44,16 @@ class Termibol {
         }
     }
 
-    int readUserInputAndSetSelectedLeague() {
-        this.userInput = userInputHandler.readInt();
+    int readUserInputAndSetSelectedLeague() throws NoNumberInputException {
+        String tmp = " ";
+
+        try {
+            tmp = userInputHandler.read();
+            this.userInput = Integer.parseInt(tmp);
+        } catch (NumberFormatException | NoSuchElementException e) {
+            throw new NoNumberInputException(String.format(MessageHandler.NOT_A_NUMBER_MESSAGE, tmp));
+        }
+
         this.selectedLeague = determineSelectedLeagueFromInt(this.userInput);
 
         return this.userInput;
