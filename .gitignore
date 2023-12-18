@@ -2,3 +2,4 @@
 /target
 termibol.iml
 application.properties
+*.iml
