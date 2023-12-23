@@ -1,7 +1,6 @@
 package com.gitlab.kevinnowak;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -10,35 +9,48 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 class DataHandler {
 
     void callApiForStanding(League selectedLeague) {
         String responseBody = getResponseBody(selectedLeague);
-        parseResponse(responseBody); // return Standing object
+        TableDTO tableDTO = mapToDTO(responseBody);
+
+        System.out.println(tableDTO);
     }
 
-    private void parseResponse(String responseBody) {
+    private TableDTO mapToDTO(String responseBody) {
         ObjectMapper objectMapper = new ObjectMapper();
+        TableDTO tableDTO = new TableDTO(new ArrayList<>());
 
         try {
             JsonNode rootNode = objectMapper.readTree(responseBody);
-            JsonNode standingsNode = rootNode.path("standings").get(0).path("table");
+            JsonNode tableNode = rootNode.path("standings").get(0).path("table");
 
-            for (JsonNode teamNode : standingsNode) {
-                int position = teamNode.path("position").asInt();
-                String teamName = teamNode.path("team").path("name").asText();
+            for (JsonNode tableRowNode : tableNode) {
+                TableRowDTO tableRowDTO = new TableRowDTO(
+                        tableRowNode.path("position").asInt(),
+                        tableRowNode.path("team").path("name").asText(),
+                        tableRowNode.path("playedGames").asInt(),
+                        tableRowNode.path("won").asInt(),
+                        tableRowNode.path("draw").asInt(),
+                        tableRowNode.path("lost").asInt(),
+                        tableRowNode.path("goalsFor").asInt(),
+                        tableRowNode.path("goalsAgainst").asInt(),
+                        tableRowNode.path("goalDifference").asInt(),
+                        tableRowNode.path("points").asInt()
+                );
 
-                System.out.printf("Position: %d, Club: %s\n",
-                        position, teamName);
+                tableDTO.tableRows().add(tableRowDTO);
             }
 
 //            Throw own exception
-        } catch (JsonMappingException e) {
-            throw new RuntimeException(e);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+
+        return tableDTO;
     }
 
     private static String getResponseBody(League selectedLeague) {

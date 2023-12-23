@@ -33,4 +33,8 @@ class MessageHandler {
 
     private MessageHandler() {
     }
+
+    static String formatTableDTO(TableDTO tableDTO) {
+        return "";
+    }
 }
