@@ -31,10 +31,35 @@ class MessageHandler {
                     Your input "%s" is not a number! Please enter a number.
                     """;
 
+    static final String SEPARATION_LINE =
+            "------------------------------------------------------------------------------------------------";
+
+    static final String FORMATTED_WIDTH_TITLE =
+            "| %-8s | %-25s | %-6s | %-3s | %-4s | %-4s |  %s  |  %s  |  %s  | %-6s |%n";
+
+    static final String FORMATTED_WIDTH_ROW =
+            "| %-8s | %-25s | %6s | %3s | %4s | %4s | %3s | %3s | %3s | %6s |%n";
+
     private MessageHandler() {
     }
 
     static String formatTableDTO(TableDTO tableDTO) {
-        return "";
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n" + SEPARATION_LINE + "\n");
+        sb.append(String.format(FORMATTED_WIDTH_TITLE,
+                "Position", "Team", "Played", "Won", "Draw", "Lost", "GF", "GA", "GD", "Points"));
+        sb.append(SEPARATION_LINE + "\n");
+
+        for (TableRowDTO row : tableDTO.tableRows()) {
+            sb.append(String.format(
+                    FORMATTED_WIDTH_ROW,
+                    row.position(), row.teamName(), row.played(), row.won(), row.draw(), row.lost(), row.goalsFor(),
+                    row.goalsAgainst(), row.goalDifference(), row.points()
+            ));
+        }
+
+        sb.append(SEPARATION_LINE + "\n");
+
+        return sb.toString();
     }
 }

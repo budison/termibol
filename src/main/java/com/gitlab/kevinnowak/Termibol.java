@@ -25,12 +25,8 @@ class Termibol {
             }
         } while (this.selectedLeague == League.NONE);
 
-        dataHandler.callApiForStanding(selectedLeague);
-
-//        Standing standing = callApiForStandings()
-//        messageHandler.printTable(table)
-
-
+        String table = dataHandler.callApiForStanding(selectedLeague);
+        System.out.println(table);
 
         return 1;
     }

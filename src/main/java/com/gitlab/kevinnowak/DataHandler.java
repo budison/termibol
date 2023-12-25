@@ -13,11 +13,10 @@ import java.util.ArrayList;
 
 class DataHandler {
 
-    void callApiForStanding(League selectedLeague) {
+    String callApiForStanding(League selectedLeague) {
         String responseBody = getResponseBody(selectedLeague);
         TableDTO tableDTO = mapToDTO(responseBody);
-
-        System.out.println(tableDTO);
+        return MessageHandler.formatTableDTO(tableDTO);
     }
 
     private TableDTO mapToDTO(String responseBody) {
@@ -31,7 +30,7 @@ class DataHandler {
             for (JsonNode tableRowNode : tableNode) {
                 TableRowDTO tableRowDTO = new TableRowDTO(
                         tableRowNode.path("position").asInt(),
-                        tableRowNode.path("team").path("name").asText(),
+                        tableRowNode.path("team").path("shortName").asText(),
                         tableRowNode.path("playedGames").asInt(),
                         tableRowNode.path("won").asInt(),
                         tableRowNode.path("draw").asInt(),
