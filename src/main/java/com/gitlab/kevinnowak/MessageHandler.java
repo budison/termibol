@@ -32,13 +32,13 @@ class MessageHandler {
                     """;
 
     static final String SEPARATION_LINE =
-            "------------------------------------------------------------------------------------------------";
+            "-".repeat(100);
 
     static final String FORMATTED_WIDTH_TITLE =
-            "| %-8s | %-25s | %-6s | %-3s | %-4s | %-4s |  %s  |  %s  |  %s  | %-6s |%n";
+            "| %-8s |            %s            | %-6s | %-3s | %-4s | %-4s |  %s  |  %s  |  %s  | %-6s |%n";
 
     static final String FORMATTED_WIDTH_ROW =
-            "| %-8s | %-25s | %6s | %3s | %4s | %4s | %3s | %3s | %3s | %6s |%n";
+            "| %-8s | %-26s | %6s | %3s | %4s | %4s | %4s | %4s | %4s | %6s |%n";
 
     private MessageHandler() {
     }
