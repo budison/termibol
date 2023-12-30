@@ -13,19 +13,28 @@ import java.util.ArrayList;
 
 class DataHandler {
 
-    String callApiForStanding(League selectedLeague) {
-        String responseBody = getResponseBody(selectedLeague);
-        TableDTO tableDTO = mapToDTO(responseBody);
+    private DataHandler() {
+    }
+
+    static String callApiForStanding(League selectedLeague)
+            throws MappingException, NoLeagueException, ResponseBodyException {
+        String responseBody;
+        TableDTO tableDTO;
+        responseBody = getResponseBody(selectedLeague);
+        tableDTO = mapToDTO(responseBody);
+
         return MessageHandler.formatTableDTO(tableDTO);
     }
 
-    private TableDTO mapToDTO(String responseBody) {
+    static TableDTO mapToDTO(String responseBody) throws MappingException {
         ObjectMapper objectMapper = new ObjectMapper();
-        TableDTO tableDTO = new TableDTO(new ArrayList<>());
+        TableDTO tableDTO;
 
         try {
             JsonNode rootNode = objectMapper.readTree(responseBody);
             JsonNode tableNode = rootNode.path("standings").get(0).path("table");
+
+            tableDTO = new TableDTO(rootNode.path("area").path("code").asText(), new ArrayList<>());
 
             for (JsonNode tableRowNode : tableNode) {
                 TableRowDTO tableRowDTO = new TableRowDTO(
@@ -44,15 +53,14 @@ class DataHandler {
                 tableDTO.tableRows().add(tableRowDTO);
             }
 
-//            Throw own exception
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new MappingException(MessageHandler.MAPPING_ISSUE_MESSAGE);
         }
 
         return tableDTO;
     }
 
-    private static String getResponseBody(League selectedLeague) {
+    static String getResponseBody(League selectedLeague) throws ResponseBodyException, NoLeagueException {
         Configuration configuration = new Configuration();
         String token = configuration.getProperty("api.token");
         StringBuilder sb = new StringBuilder(configuration.getProperty("api.url"));
@@ -62,7 +70,7 @@ class DataHandler {
             case LIGUE_1 -> sb.append("/FL1");
             case BUNDESLIGA -> sb.append("/BL1");
             case PREMIER_LEAGUE -> sb.append("/PL");
-            case NONE -> System.exit(1);
+            case NONE -> throw new NoLeagueException(MessageHandler.INVALID_INPUT_MESSAGE);
         }
 
         sb.append("/standings");
@@ -87,9 +95,8 @@ class DataHandler {
                 return response.toString();
 
             }
-//            Throw own exception
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ResponseBodyException(MessageHandler.NO_RESPONSE_BODY_MESSAGE);
         }
 
         return null;

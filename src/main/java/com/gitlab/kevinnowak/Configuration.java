@@ -6,7 +6,7 @@ import java.util.Properties;
 
 class Configuration {
 
-    private Properties properties = new Properties();
+    private final Properties properties = new Properties();
 
     Configuration() {
         try (InputStream input = getClass().getClassLoader().getResourceAsStream("application.properties")) {

@@ -5,13 +5,11 @@ import java.util.NoSuchElementException;
 class Termibol {
     private final UserInputHandler userInputHandler;
     private League selectedLeague;
-    private final DataHandler dataHandler;
     private int userInput;
 
     Termibol() {
         this.userInputHandler = new UserInputHandler();
         this.selectedLeague = League.NONE;
-        this.dataHandler = new DataHandler();
     }
 
     int start() {
@@ -25,10 +23,18 @@ class Termibol {
             }
         } while (this.selectedLeague == League.NONE);
 
-        String table = dataHandler.callApiForStanding(selectedLeague);
+        String table;
+
+        try {
+            table = DataHandler.callApiForStanding(selectedLeague);
+        } catch (MappingException | NoLeagueException | ResponseBodyException e) {
+            System.err.println(e.getMessage());
+            return 1;
+        }
+
         System.out.println(table);
 
-        return 1;
+        return 0;
     }
 
     void getUserInputViaPrompt() throws NoLeagueException, NoNumberInputException {

@@ -12,7 +12,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class MainTest {
 
     @Test
-    void shouldPrintSomethingToOutputStreamWhenRunningMain() {
+//    void shouldPrintSomethingToOutputStreamWhenRunningMain() {
+    void givenValidUserInput_whenRunningMain_thenPrintSomethingToOutputStream() {
         // Given
         InputStream originalIn = System.in;
         ByteArrayInputStream testIn = new ByteArrayInputStream("1".getBytes());

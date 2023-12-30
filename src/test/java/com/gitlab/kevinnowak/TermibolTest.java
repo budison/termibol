@@ -25,7 +25,7 @@ class TermibolTest {
     }
 
     @Test
-    void shouldReturnOneWhenStartMethodFinishedSuccessfully() {
+    void givenValidUserInput_whenGameTerminatesWithoutError_thenReturnIntZero() {
         // Given
         String simulatedUserInput = "0\n1";
         InputStream originalIn = System.in;
@@ -38,7 +38,7 @@ class TermibolTest {
             int result = termibol.start();
 
             // Then
-            assertEquals(1, result);
+            assertEquals(0, result);
         } finally {
             System.setIn(originalIn);
         }
@@ -46,7 +46,8 @@ class TermibolTest {
 
     @ParameterizedTest
     @MethodSource("userInputAndCorrespondingLeagueProvider")
-    void shouldDetermineSelectedLeagueWhenGivenUserInput(String simulatedUserInput, League expectedLeague) {
+    void givenValidUserInput_whenTryingToDetermineLeague_thenReturnCorrespondingLeague(
+            String simulatedUserInput, League expectedLeague) {
         // Given
         Termibol termibol = new Termibol();
 
@@ -59,7 +60,8 @@ class TermibolTest {
 
     @ParameterizedTest
     @MethodSource("userInputAndCorrespondingLeagueProvider")
-    void shouldReadUserInputAndSetSelectedLeagueCorrectly(String simulatedUserInput, League expectedLeague) throws NoNumberInputException {
+    void givenValidUserInput_whenTryingToDetermineLeague_thenSetLeagueCorrectly(
+            String simulatedUserInput, League expectedLeague) throws NoNumberInputException {
         // Given
         InputStream originalIn = System.in;
         ByteArrayInputStream testIn = new ByteArrayInputStream(simulatedUserInput.getBytes());
@@ -80,7 +82,7 @@ class TermibolTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"0", "12", "39", "-4"})
-    void shouldThrowNoLeagueExceptionWhenUserInputIsInvalid(String simulatedUserInput) {
+    void givenInvalidUserInput_whenTryingToDetermineLeague_thenThrowNoLeagueException(String simulatedUserInput) {
         // Given
         InputStream originalIn = System.in;
         ByteArrayInputStream testIn = new ByteArrayInputStream(simulatedUserInput.getBytes());
@@ -102,7 +104,8 @@ class TermibolTest {
 
     @ParameterizedTest
     @ValueSource(strings = {"f", "Q", ".", "<", "+", " "})
-    void shouldThrowNoNumberInputExceptionWhenUserInputIsNotANumber(String simulatedUserInput) {
+    void givenUserInputIsNotANumber_whenTryingToParseInputToInt_thenThrowNoNumberInputException(
+            String simulatedUserInput) {
         // Given
         InputStream originalIn = System.in;
         ByteArrayInputStream testIn = new ByteArrayInputStream(simulatedUserInput.getBytes());
