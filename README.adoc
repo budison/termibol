@@ -20,7 +20,7 @@ To use Termibol, follow these steps:
 
 1. Clone the repository: `git clone https://github.com/budison/termibol.git`
 2. Navigate to the project directory: `cd termibol`
-3. Create a file called `application.properties` under `termibol/src/main/resources/` and add there your API-Token from http://api.football-data.org. Add `api.token=[YOUR-API-TOKEN]` and `api.url=http://api.football-data.org/v4/competitions/`
+3. Create a file called `application.properties` under `termibol/src/main/resources/` and add there your API-Token from http://api.football-data.org. So, simply add `api.token=[YOUR-API-TOKEN]` and `api.url=http://api.football-data.org/v4/competitions/`.
 4. Run `mvn clean package`
 5. Now run the application with `java -jar target/termibol-1.0-SNAPSHOT.jar`
 
